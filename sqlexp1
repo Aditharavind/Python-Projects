@@ -1,0 +1,223 @@
+mysql> create Database college_database;
+Query OK, 1 row affected (0.17 sec)
+
+mysql> use college_database
+Database changed
+mysql> create table student (roll_no INTEGER,name VARCHAR(255),dob DATE,address
+TEXT,phone_no VARCHAR(15),blood_grp VARCHAR(5));
+Query OK, 0 rows affected (1.21 sec)
+
+mysql> create table course (Course_id INTEGER,Course_name VARCHAR(255),course_duration INTEGER);
+Query OK, 0 rows affected (0.65 sec)
+
+mysql> show tables;
++----------------------------+
+| Tables_in_college_database |
++----------------------------+
+| course                     |
+| student                    |
++----------------------------+
+2 rows in set (0.01 sec)
+
+mysql> desc course
+    -> ;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| Course_id       | int          | YES  |     | NULL    |       |
+| Course_name     | varchar(255) | YES  |     | NULL    |       |
+| course_duration | int          | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc student
+    -> ;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| roll_no   | int          | YES  |     | NULL    |       |
+| name      | varchar(255) | YES  |     | NULL    |       |
+| dob       | date         | YES  |     | NULL    |       |
+| address   | text         | YES  |     | NULL    |       |
+| phone_no  | varchar(15)  | YES  |     | NULL    |       |
+| blood_grp | varchar(5)   | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> alter table student drop column blood_grp;
+Query OK, 0 rows affected (0.49 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc student;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| roll_no  | int          | YES  |     | NULL    |       |
+| name     | varchar(255) | YES  |     | NULL    |       |
+| dob      | date         | YES  |     | NULL    |       |
+| address  | text         | YES  |     | NULL    |       |
+| phone_no | varchar(15)  | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> alter table student add adar_no numeric;
+Query OK, 0 rows affected (0.82 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc student
+    -> ;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| roll_no  | int           | YES  |     | NULL    |       |
+| name     | varchar(255)  | YES  |     | NULL    |       |
+| dob      | date          | YES  |     | NULL    |       |
+| address  | text          | YES  |     | NULL    |       |
+| phone_no | varchar(15)   | YES  |     | NULL    |       |
+| adar_no  | decimal(10,0) | YES  |     | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+mysql> alter table student modify phone_no INT;
+Query OK, 0 rows affected (2.16 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc student;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| roll_no  | int           | YES  |     | NULL    |       |
+| name     | varchar(255)  | YES  |     | NULL    |       |
+| dob      | date          | YES  |     | NULL    |       |
+| address  | text          | YES  |     | NULL    |       |
+| phone_no | int           | YES  |     | NULL    |       |
+| adar_no  | decimal(10,0) | YES  |     | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+
+mysql> ALTER TABLE student ADD CONSTRAINT PK_student PRIMARY KEY(roll_no);
+Query OK, 0 rows affected (2.24 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc student;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| roll_no  | int           | NO   | PRI | NULL    |       |
+| name     | varchar(255)  | YES  |     | NULL    |       |
+| dob      | date          | YES  |     | NULL    |       |
+| address  | text          | YES  |     | NULL    |       |
+| phone_no | int           | YES  |     | NULL    |       |
+| adar_no  | decimal(10,0) | YES  |     | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> ALTER TABLE course ADD CONSTRAINT PK_course PRIMARY KEY(course_id);
+Query OK, 0 rows affected (1.50 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> drop table student;
+Query OK, 0 rows affected (0.39 sec)
+
+mysql> drop table course
+    -> ;
+Query OK, 0 rows affected (0.46 sec)
+
+mysql> drop database college_database;
+Query OK, 0 rows affected (0.20 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| Job                |
+| bank               |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> create database org_database;
+Query OK, 1 row affected (0.15 sec)
+
+mysql> use org_database;
+Database changed
+mysql> create table employee(emp_no varchar(20),emp_name varchar(20),dob date,address TEXT,mobile_no BIGINT,dept_no varchar(20),salary INT);
+Query OK, 0 rows affected (0.65 sec)
+
+mysql> desc employee;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| emp_no    | varchar(20) | YES  |     | NULL    |       |
+| emp_name  | varchar(20) | YES  |     | NULL    |       |
+| dob       | date        | YES  |     | NULL    |       |
+| address   | text        | YES  |     | NULL    |       |
+| mobile_no | bigint      | YES  |     | NULL    |       |
+| dept_no   | varchar(20) | YES  |     | NULL    |       |
+| salary    | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+7 rows in set (0.01 sec)
+
+mysql> create table department(dept_no varchar(20),dept_name varchar(255),location varchar(255));
+Query OK, 0 rows affected (1.13 sec)
+
+mysql> desc department;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| dept_no   | varchar(20)  | YES  |     | NULL    |       |
+| dept_name | varchar(255) | YES  |     | NULL    |       |
+| location  | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> show tables
+    -> ;
++------------------------+
+| Tables_in_org_database |
++------------------------+
+| department             |
+| employee               |
++------------------------+
+2 rows in set (0.00 sec)
+
+mysql> alter table employee add designation varchar(255);
+Query OK, 0 rows affected (0.78 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| emp_no      | varchar(20)  | YES  |     | NULL    |       |
+| emp_name    | varchar(20)  | YES  |     | NULL    |       |
+| dob         | date         | YES  |     | NULL    |       |
+| address     | text         | YES  |     | NULL    |       |
+| mobile_no   | bigint       | YES  |     | NULL    |       |
+| dept_no     | varchar(20)  | YES  |     | NULL    |       |
+| salary      | int          | YES  |     | NULL    |       |
+| designation | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+
+mysql> alter table department drop column location;
+Query OK, 0 rows affected (0.71 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc department;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| dept_no   | varchar(20)  | YES  |     | NULL    |       |
+| dept_name | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> 
+
+
