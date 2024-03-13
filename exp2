@@ -1,0 +1,319 @@
+mca01@lab6-Veriton-S2670G:~$ mysql -u mca01 -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.36-0ubuntu0.20.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use person;
+Database changed
+mysql> create table persons(personID INTEGER PRIMARY KEY,name VARCHAR(255) NOT NULL,aadhar VARCHAR(255) NOT NULL UNIQUE,Age INTEGER CHECK(Age>18));
+Query OK, 0 rows affected (0.94 sec)
+
+mysql> create table orders(orderid INTEGER PRIMARY KEY,ordernumber VARCHAR NOT NULL,PersonID integer,FOREIGN KEY(personID)REFERENCS persons(personID));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT NULL,PersonID integer,FOREIGN KEY(personID)REFERENCS persons(personID))' at line 1
+mysql> create tabel orders(orderID integer primary key,ordernumber varchar(255)not null,personID integer,foreign key (personID) REFERENCES persons(personID));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'tabel orders(orderID integer primary key,ordernumber varchar(255)not null,person' at line 1
+mysql> create table orders(orderID integer primary key,ordernumber varchar(255)not null,personID integer,foreign key (personID) REFERENCES persons(personID));
+Query OK, 0 rows affected (0.74 sec)
+
+mysql> show tables;
++------------------+
+| Tables_in_person |
++------------------+
+| orders           |
+| persons          |
++------------------+
+2 rows in set (0.00 sec)
+
+mysql> desc orders
+    -> ;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| orderID     | int          | NO   | PRI | NULL    |       |
+| ordernumber | varchar(255) | NO   |     | NULL    |       |
+| personID    | int          | YES  | MUL | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> DESC persons;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| personID | int          | NO   | PRI | NULL    |       |
+| name     | varchar(255) | NO   |     | NULL    |       |
+| aadhar   | varchar(255) | NO   | UNI | NULL    |       |
+| Age      | int          | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> alter table employee add primary key(emp_no);
+ERROR 1146 (42S02): Table 'person.employee' doesn't exist
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| Job                |
+| bank               |
+| information_schema |
+| mysql              |
+| org_database       |
+| performance_schema |
+| person             |
+| sys                |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> use org_database'
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''' at line 1
+mysql> use org_database;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> create table persons(personID INTEGER PRIMARY KEY,name VARCHAR(255) NOT NULL,aadhar VARCHAR(255) NOT NULL UNIQUE,Age INTEGER CHECK(Age>18));
+Query OK, 0 rows affected (1.12 sec)
+
+mysql> create table orders(orderID integer primary key,ordernumber varchar(255)not null,personID integer,foreign key (personID) REFERENCES persons(personID));
+Query OK, 0 rows affected (1.41 sec)
+
+mysql> shown tables;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'shown tables' at line 1
+mysql> show tables;
++------------------------+
+| Tables_in_org_database |
++------------------------+
+| department             |
+| employee               |
+| orders                 |
+| persons                |
++------------------------+
+4 rows in set (0.00 sec)
+
+mysql> desc department;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| dept_no   | varchar(20)  | YES  |     | NULL    |       |
+| dept_name | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc employee;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| emp_no      | varchar(20)  | YES  |     | NULL    |       |
+| emp_name    | varchar(20)  | YES  |     | NULL    |       |
+| dob         | date         | YES  |     | NULL    |       |
+| address     | text         | YES  |     | NULL    |       |
+| mobile_no   | bigint       | YES  |     | NULL    |       |
+| dept_no     | varchar(20)  | YES  |     | NULL    |       |
+| salary      | int          | YES  |     | NULL    |       |
+| designation | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> alter table employee add primary key(emp_no);
+Query OK, 0 rows affected (1.73 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table department add primary key(dept_no);
+Query OK, 0 rows affected (1.88 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee add constraint fk_dept_no FOREIGN KEY(dept_no) REFERENCES deparment(dept_no) ON DELETE CASCADE;
+ERROR 1824 (HY000): Failed to open the referenced table 'deparment'
+mysql> alter table employee add constraint fk_dept_no FOREIGN KEY(dept_no) REFERENCES department(dept_no) ON DELETE CASCADE;
+Query OK, 0 rows affected (2.49 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| emp_no      | varchar(20)  | NO   | PRI | NULL    |       |
+| emp_name    | varchar(20)  | YES  |     | NULL    |       |
+| dob         | date         | YES  |     | NULL    |       |
+| address     | text         | YES  |     | NULL    |       |
+| mobile_no   | bigint       | YES  |     | NULL    |       |
+| dept_no     | varchar(20)  | YES  | MUL | NULL    |       |
+| salary      | int          | YES  |     | NULL    |       |
+| designation | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> desc department;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| dept_no   | varchar(20)  | NO   | PRI | NULL    |       |
+| dept_name | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into department values(1,'Mca');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> insert into department values(2,'BTECH CS');
+Query OK, 1 row affected (0.10 sec)
+
+mysql> insert into department values(3,'BTECH MECH');
+Query OK, 1 row affected (0.12 sec)
+
+mysql> select * from department;
++---------+------------+
+| dept_no | dept_name  |
++---------+------------+
+| 1       | Mca        |
+| 2       | BTECH CS   |
+| 3       | BTECH MECH |
++---------+------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into department values(4,'BTECH CIVIL');
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into department values(5,'BTECH ELECTRONIC');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into department values(6,'BTECH ARCH');
+Query OK, 1 row affected (0.14 sec)
+
+mysql> insert into department values(6,'BTECH Aero');
+ERROR 1062 (23000): Duplicate entry '6' for key 'department.PRIMARY'
+mysql> insert into department values(7,'BTECH Aero');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from department;
++---------+------------------+
+| dept_no | dept_name        |
++---------+------------------+
+| 1       | Mca              |
+| 2       | BTECH CS         |
+| 3       | BTECH MECH       |
+| 4       | BTECH CIVIL      |
+| 5       | BTECH ELECTRONIC |
+| 6       | BTECH ARCH       |
+| 7       | BTECH Aero       |
++---------+------------------+
+7 rows in set (0.00 sec)
+
+mysql> insert into department values(8,'Msc cs');
+Query OK, 1 row affected (0.12 sec)
+
+mysql> insert into department values(9,'Msc electro');
+Query OK, 1 row affected (0.10 sec)
+
+mysql> insert into department values(10,'MBA');
+Query OK, 1 row affected (0.10 sec)
+
+mysql> select * from department;
++---------+------------------+
+| dept_no | dept_name        |
++---------+------------------+
+| 1       | Mca              |
+| 10      | MBA              |
+| 2       | BTECH CS         |
+| 3       | BTECH MECH       |
+| 4       | BTECH CIVIL      |
+| 5       | BTECH ELECTRONIC |
+| 6       | BTECH ARCH       |
+| 7       | BTECH Aero       |
+| 8       | Msc cs           |
+| 9       | Msc electro      |
++---------+------------------+
+10 rows in set (0.00 sec)
+
+mysql> select * from department order by;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> select * from department orderby desc
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc' at line 1
+mysql> select * from department orderby 
+    -> ;
++---------+------------------+
+| dept_no | dept_name        |
++---------+------------------+
+| 1       | Mca              |
+| 10      | MBA              |
+| 2       | BTECH CS         |
+| 3       | BTECH MECH       |
+| 4       | BTECH CIVIL      |
+| 5       | BTECH ELECTRONIC |
+| 6       | BTECH ARCH       |
+| 7       | BTECH Aero       |
+| 8       | Msc cs           |
+| 9       | Msc electro      |
++---------+------------------+
+10 rows in set (0.00 sec)
+
+mysql> show tables;
++------------------------+
+| Tables_in_org_database |
++------------------------+
+| department             |
+| employee               |
+| orders                 |
+| persons                |
++------------------------+
+4 rows in set (0.00 sec)
+
+mysql> desc employee;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| emp_no      | varchar(20)  | NO   | PRI | NULL    |       |
+| emp_name    | varchar(20)  | YES  |     | NULL    |       |
+| dob         | date         | YES  |     | NULL    |       |
+| address     | text         | YES  |     | NULL    |       |
+| mobile_no   | bigint       | YES  |     | NULL    |       |
+| dept_no     | varchar(20)  | YES  | MUL | NULL    |       |
+| salary      | int          | YES  |     | NULL    |       |
+| designation | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> insert into employee values(1,'Adith',08-01-2003,'mavelikara',967,'123',131,'hod');
+ERROR 1292 (22007): Incorrect date value: '-1996' for column 'dob' at row 1
+mysql> insert into employee values(1,'Adith',08-01-1992,'mavelikara',967,'123',131,'hod');
+ERROR 1292 (22007): Incorrect date value: '-1985' for column 'dob' at row 1
+mysql> insert into employee values(1,'Adith',2003-01-08,'mavelikara',967,'123',131,'hod');
+ERROR 1292 (22007): Incorrect date value: '1994' for column 'dob' at row 1
+mysql> insert into employee values(1,'Adith',21-2003-08,'mavelikara',967,'123',131,'hod');
+ERROR 1292 (22007): Incorrect date value: '-1990' for column 'dob' at row 1
+mysql> insert into employee values(1,'Adith',2001-23-08,'mavelikara',967,'123',131,'hod');
+ERROR 1292 (22007): Incorrect date value: '1970' for column 'dob' at row 1
+mysql> insert into employee values(1,'Adith',2001-12-08,'mavelikara',967,'123',131,'hod');
+ERROR 1292 (22007): Incorrect date value: '1981' for column 'dob' at row 1
+mysql> alter table employee drop column dob;
+Query OK, 0 rows affected (0.42 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| emp_no      | varchar(20)  | NO   | PRI | NULL    |       |
+| emp_name    | varchar(20)  | YES  |     | NULL    |       |
+| address     | text         | YES  |     | NULL    |       |
+| mobile_no   | bigint       | YES  |     | NULL    |       |
+| dept_no     | varchar(20)  | YES  | MUL | NULL    |       |
+| salary      | int          | YES  |     | NULL    |       |
+| designation | varchar(255) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> insert into employee values(1,'Adith','mavelikara',967,'123',131,'hod');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`org_database`.`employee`, CONSTRAINT `fk_dept_no` FOREIGN KEY (`dept_no`) REFERENCES `department` (`dept_no`) ON DELETE CASCADE)
+mysql> 
+
+
