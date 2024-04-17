@@ -1,0 +1,504 @@
+mysql> use ad
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> CREATE TABLE Countries (
+    ->   country_id INT PRIMARY KEY,
+    ->   country_name VARCHAR(255) NOT NULL,
+    ->   region_id INT,
+    ->   FOREIGN KEY (region_id) REFERENCES Regions(region_id)
+    -> );
+Query OK, 0 rows affected (0.78 sec)
+
+mysql> CREATE TABLE Locations (
+    ->   location_id INT PRIMARY KEY,
+    ->   street_address VARCHAR(255) NOT NULL,
+    ->   postal_code VARCHAR(255) NOT NULL,
+    ->   city VARCHAR(255) NOT NULL,
+    ->   state_province VARCHAR(255) NOT NULL,
+    ->   country_id INT,
+    ->   FOREIGN KEY (country_id) REFERENCES Countries(country_id)
+    -> );
+Query OK, 0 rows affected (1.33 sec)
+
+mysql> CREATE TABLE Departments (
+    ->   department_id INT PRIMARY KEY,
+    ->   department_name VARCHAR(255) NOT NULL,
+    ->   location_id INT,
+    ->   FOREIGN KEY (location_id) REFERENCES Locations(location_id)
+    -> );
+Query OK, 0 rows affected (1.34 sec)
+
+mysql> CREATE TABLE Employees (
+    ->   employee_id INT PRIMARY KEY,
+    ->   first_name VARCHAR(255) NOT NULL,
+    ->   last_name VARCHAR(255) NOT NULL,
+    ->   email VARCHAR(255) NOT NULL,
+    ->   phone_number VARCHAR(255) NOT NULL,
+    ->   hire_date DATE NOT NULL,
+    ->   job_id INT,
+    ->   salary DECIMAL(10,2),
+    ->   manager_id INT,
+    ->   department_id INT,
+    ->   FOREIGN KEY (job_id) REFERENCES Jobs(job_id),
+    ->   FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+    -> );
+Query OK, 0 rows affected (0.94 sec)
+
+mysql> show tables
+    -> ;
++--------------+
+| Tables_in_ad |
++--------------+
+| Countries    |
+| Departments  |
+| Employees    |
+| Jobs         |
+| Locations    |
+| Regions      |
++--------------+
+6 rows in set (0.00 sec)
+
+mysql>  CREATE TABLE Dependents (
+    ->   dependent_id INT PRIMARY KEY,
+    ->   first_name VARCHAR(255) NOT NULL,
+    ->   last_name VARCHAR(255) NOT NULL,
+    ->   relationship VARCHAR(255) NOT NULL,
+    ->   employee_id INT,
+    ->   FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+    -> );
+Query OK, 0 rows affected (0.93 sec)
+
+mysql> show tables
+    -> ;
++--------------+
+| Tables_in_ad |
++--------------+
+| Countries    |
+| Departments  |
+| Dependents   |
+| Employees    |
+| Jobs         |
+| Locations    |
+| Regions      |
++--------------+
+7 rows in set (0.00 sec)
+
+mysql> insert into Departments (department_id,department_name,location_id)values(101,'IT DEPARTMENT',1700);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ad`.`Departments`, CONSTRAINT `Departments_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `Locations` (`location_id`))
+mysql> insert into locations(location_id,street_address,postal_code,city.state_province,country_id)values(1700,'123 main st','12345','Anytown','Anystate',1);
+ERROR 1146 (42S02): Table 'ad.locations' doesn't exist
+mysql> insert into Locations(location_id,street_address,postal_code,city.state_province,country_id)values(1700,'123 main st','12345','Anytown','Anystate',1);
+ERROR 1054 (42S22): Unknown column 'city.state_province' in 'field list'
+mysql> desc Locations;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| location_id    | int          | NO   | PRI | NULL    |       |
+| street_address | varchar(255) | NO   |     | NULL    |       |
+| postal_code    | varchar(255) | NO   |     | NULL    |       |
+| city           | varchar(255) | NO   |     | NULL    |       |
+| state_province | varchar(255) | NO   |     | NULL    |       |
+| country_id     | int          | YES  | MUL | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> insert into Locations(location_id,street_address,postal_code,city,state_province,country_id)values(1700,'123 main st','12345','Anytown','Anystate',1);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ad`.`Locations`, CONSTRAINT `Locations_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `Countries` (`country_id`))
+mysql> show tables;
++--------------+
+| Tables_in_ad |
++--------------+
+| Countries    |
+| Departments  |
+| Dependents   |
+| Employees    |
+| Jobs         |
+| Locations    |
+| Regions      |
++--------------+
+7 rows in set (0.00 sec)
+
+mysql> insert into Departments (department_id,department_name,location_id)values(101,'IT DEPARTMENT',1700);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`ad`.`Departments`, CONSTRAINT `Departments_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `Locations` (`location_id`))
+mysql> insert into Regions(region_id,region_name)VALUES(1,'North America');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> insert into Regions(region_id,region_name)VALUES(2,'Europe');
+Query OK, 1 row affected (0.09 sec)
+
+mysql> select * from Regions;
++-----------+---------------+
+| region_id | region_name   |
++-----------+---------------+
+|         1 | North America |
+|         2 | Europe        |
++-----------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> insert into countries(country_id,country_name,region_id)values(1,'United
+states',1);
+ERROR 1146 (42S02): Table 'ad.countries' doesn't exist
+mysql> insert into Countries(country_id,country_name,region_id)values(1,'United
+states',1);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> insert into Countries(country_id,country_name,region_id)values(2,'canada',1);
+Query OK, 1 row affected (0.11 sec)
+
+mysql> insert into Countries(country_id,country_name,region_id)values(3,'UK',2);
+Query OK, 1 row affected (0.14 sec)
+
+mysql> insert into Countries(country_id,country_name,region_id)values(4,'Germany',2);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into Locations(location_id,street_address,postal_code,city,state_province,country_id)values(1700,'123 main st','12345','Anytown','Anystate',1);
+Query OK, 1 row affected (0.15 sec)
+
+mysql> insert into Locations(location_id,street_address,postal_code,city,state_province,country_id)values(1701,'456 Elm st','67890','othertown','Otherstate',2);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into Locations(location_id,street_address,postal_code,city,state_province,country_id)values(1702,'789 Oak st','98765','Yetanothertown','Yetanotherstate',3);
+Query OK, 1 row affected (0.13 sec)
+
+mysql> select * from Locations;
++-------------+----------------+-------------+----------------+-----------------+------------+
+| location_id | street_address | postal_code | city           | state_province  | country_id |
++-------------+----------------+-------------+----------------+-----------------+------------+
+|        1700 | 123 main st    | 12345       | Anytown        | Anystate        |          1 |
+|        1701 | 456 Elm st     | 67890       | othertown      | Otherstate      |          2 |
+|        1702 | 789 Oak st     | 98765       | Yetanothertown | Yetanotherstate |          3 |
++-------------+----------------+-------------+----------------+-----------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Departments (department_id,department_name,location_id)values(101,'IT DEPARTMENT',1700);
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into Departments (department_id,department_name,location_id)values(102,'HR DEPARTMENT',1701);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> insert into Departments (department_id,department_name,location_id)values(102,'Finance DEPARTMENT',1701);
+ERROR 1062 (23000): Duplicate entry '102' for key 'Departments.PRIMARY'
+mysql> insert into Departments (department_id,department_name,location_id)values(103,'Finance DEPARTMENT',1702);
+Query OK, 1 row affected (0.12 sec)
+
+mysql> select * from Departments;
++---------------+--------------------+-------------+
+| department_id | department_name    | location_id |
++---------------+--------------------+-------------+
+|           101 | IT DEPARTMENT      |        1700 |
+|           102 | HR DEPARTMENT      |        1701 |
+|           103 | Finance DEPARTMENT |        1702 |
++---------------+--------------------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into jobs(job_id,job_title,min_salary,max_salary)Values(1,'Software Engg',6000,0,100000.00);
+ERROR 1146 (42S02): Table 'ad.jobs' doesn't exist
+mysql> insert into Jobs(job_id,job_title,min_salary,max_salary)Values(1,'Software Engg',6000,0,100000.00);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into Jobs(job_id,job_title,min_salary,max_salary)Values(1,'Software Engg',6000.0,100000.00);
+Query OK, 1 row affected (0.11 sec)
+
+mysql> insert into Jobs(job_id,job_title,min_salary,max_salary)Values(2,'HR Manger',70000.0,120000.00);
+Query OK, 1 row affected (0.14 sec)
+
+mysql> insert into Jobs(job_id,job_title,min_salary,max_salary)Values(3,'Financial Analyst',65000.0,110000.00);
+Query OK, 1 row affected (0.10 sec)
+
+mysql> select * from Jobs;
++--------+-------------------+------------+------------+
+| job_id | job_title         | min_salary | max_salary |
++--------+-------------------+------------+------------+
+|      1 | Software Engg     |    6000.00 |  100000.00 |
+|      2 | HR Manger         |   70000.00 |  120000.00 |
+|      3 | Financial Analyst |   65000.00 |  110000.00 |
++--------+-------------------+------------+------------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Employees(employee_id,first_name,last_name,email,phone_number,hire_data,job_id,salary,manager_id,department_id)values
+    -> (1001,'John','Doe','John@gmail.com','12345','2024-04-03',1,75000.oo,NULL,101);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'oo,NULL,101)' at line 2
+mysql> insert into Employees(employee_id,first_name,last_name,email,phone_number,hire_data,job_id,salary,manager_id,department_id)values (1001,'John','Doe','John@gmail.com','12345','2024-04-03',1,75000,NULL,101);
+ERROR 1054 (42S22): Unknown column 'hire_data' in 'field list'
+mysql> Desc Employess;
+ERROR 1146 (42S02): Table 'ad.Employess' doesn't exist
+mysql> show tables;
++--------------+
+| Tables_in_ad |
++--------------+
+| Countries    |
+| Departments  |
+| Dependents   |
+| Employees    |
+| Jobs         |
+| Locations    |
+| Regions      |
++--------------+
+7 rows in set (0.01 sec)
+
+mysql> desc Employees;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| employee_id   | int           | NO   | PRI | NULL    |       |
+| first_name    | varchar(255)  | NO   |     | NULL    |       |
+| last_name     | varchar(255)  | NO   |     | NULL    |       |
+| email         | varchar(255)  | NO   |     | NULL    |       |
+| phone_number  | varchar(255)  | NO   |     | NULL    |       |
+| hire_date     | date          | NO   |     | NULL    |       |
+| job_id        | int           | YES  | MUL | NULL    |       |
+| salary        | decimal(10,2) | YES  |     | NULL    |       |
+| manager_id    | int           | YES  |     | NULL    |       |
+| department_id | int           | YES  | MUL | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+10 rows in set (0.01 sec)
+
+mysql> insert into Employees(employee_id,first_name,last_name,email,phone_number,hire_data,job_id,salary,manager_id,department_id)values (1001,'John','Doe','John@gmail.com','12345','2024-04-03',1,75000.00,NULL,101);
+ERROR 1054 (42S22): Unknown column 'hire_data' in 'field list'
+mysql> insert into Employees(employee_id,first_name,last_name,email,phone_number,hire_date,job_id,salary,manager_id,department_id)values (1001,'John','Doe','John@gmail.com','12345','2024-04-03',1,75000.00,
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from Employees;
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+| employee_id | first_name | last_name | email          | phone_number | hire_date  | job_id | salary   | manager_id | department_id |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+|        1001 | John       | Doe       | John@gmail.com | 12345        | 2024-04-03 |      1 | 75000.00 |       NULL |           101 |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Employees e JOIN Departments d ON e.department_id=d.department_id WHERE d.location_id=1700;
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+---------------+-----------------+-------------+
+| employee_id | first_name | last_name | email          | phone_number | hire_date  | job_id | salary   | manager_id | department_id | department_id | department_name | location_id |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+---------------+-----------------+-------------+
+|        1001 | John       | Doe       | John@gmail.com | 12345        | 2024-04-03 |      1 | 75000.00 |       NULL |           101 |           101 | IT DEPARTMENT   |        1700 |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+---------------+-----------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Employees e JOIN Departments d NOT IN e.department_id=d.department_id WHERE d.location_id=1700;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NOT IN e.department_id=d.department_id WHERE d.location_id=1700' at line 1
+mysql> select * from Employees e where e.department_id NOT IN(Select Department_id from Departments where location_id=1700);
+Empty set (0.02 sec)
+
+mysql> select * from employees where salary=(select MAX(salary)FROM Employees);
+ERROR 1146 (42S02): Table 'ad.employees' doesn't exist
+mysql> select * from Employees where salary=(select MAX(salary)FROM Employees);
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+| employee_id | first_name | last_name | email          | phone_number | hire_date  | job_id | salary   | manager_id | department_id |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+|        1001 | John       | Doe       | John@gmail.com | 12345        | 2024-04-03 |      1 | 75000.00 |       NULL |           101 |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Employees where salary>(Select AVG(salary)FROM Employees);
+Empty set (0.00 sec)
+
+mysql> select d.department_id,d.department_name from Department d WHERE EXISTS(select 1 from Employees e where e.department_id =d.department AND e.salary >10000);
+ERROR 1146 (42S02): Table 'ad.Department' doesn't exist
+mysql> select d.department_id,d.department_name from Departments d WHERE EXISTS(select 1 from Employees
+ERROR 1054 (42S22): Unknown column 'd.department' in 'where clause'
+mysql> desc Departments;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| department_id   | int          | NO   | PRI | NULL    |       |
+| department_name | varchar(255) | NO   |     | NULL    |       |
+| location_id     | int          | YES  | MUL | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select d.department_id,d.department_name from Departments d WHERE EXISTS(select 1 from Employees e where e.department_id =d.department_id AND e.salary >10000);
++---------------+-----------------+
+| department_id | department_name |
++---------------+-----------------+
+|           101 | IT DEPARTMENT   |
++---------------+-----------------+
+1 row in set (0.01 sec)
+
+mysql> select d.department_id,d.department_name from Departments d WHERE EXISTS(select 1 from Employees e where e.department_id =d.department_id AND e.salary >1000);
++---------------+-----------------+
+| department_id | department_name |
++---------------+-----------------+
+|           101 | IT DEPARTMENT   |
++---------------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from Employees e Where e.salary>(Select min(salary)From Employees Where department_id=e.department_id);
+Empty set (0.00 sec)
+
+mysql> select * from EMployees e where e.salary>=(Select max(salary)From Employees Where department.id=e.department_id);
+ERROR 1146 (42S02): Table 'ad.EMployees' doesn't exist
+mysql> select * from Employees e where e.salary>=(Select max(salary)From Employees Where department.id=e.department_id);
+ERROR 1054 (42S22): Unknown column 'department.id' in 'where clause'
+mysql> select * from Employees e where e.salary>=(Select max(salary)From Employees Where Department.id=e.Department_id);
+ERROR 1054 (42S22): Unknown column 'Department.id' in 'where clause'
+mysql> select * from Employees e where e.salary>=(Select max(salary)From Employees Where department.id=e.department_id);
+ERROR 1054 (42S22): Unknown column 'department.id' in 'where clause'
+mysql> select avg(avg_salary)AS average_department_salary From (Select Avg(salary)AS avg_salary from
+Employees Group By department_id)AS department_avg;
++---------------------------+
+| average_department_salary |
++---------------------------+
+|          75000.0000000000 |
++---------------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, e.salary, avg_salary.avg_salary, e.salary - avg_salary.avg_salary AS salary_difference
+    -> FROM Employees e
+    -> CROSS JOIN (SELECT AVG(salary) AS avg_salary FROM Employees) AS avg_salary;
++------------+-----------+----------+--------------+-------------------+
+| first_name | last_name | salary   | avg_salary   | salary_difference |
++------------+-----------+----------+--------------+-------------------+
+| John       | Doe       | 75000.00 | 75000.000000 |          0.000000 |
++------------+-----------+----------+--------------+-------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM Employees e
+    -> WHERE e.salary > (
+    ->     SELECT AVG(salary)
+    ->     FROM Employees e2
+    ->     WHERE e2.department_id = e.department_id
+    -> );
+Empty set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM Employees e
+    -> WHERE NOT EXISTS (
+    ->     SELECT 1
+    ->     FROM Dependents d
+    ->     WHERE d.employee_id = e.employee_id
+    -> );
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+| employee_id | first_name | last_name | email          | phone_number | hire_date  | job_id | salary   | manager_id | department_id |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+|        1001 | John       | Doe       | John@gmail.com | 12345        | 2024-04-03 |      1 | 75000.00 |       NULL |           101 |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, d.department_name
+    -> FROM Employees e
+    -> JOIN Departments d ON e.department_id = d.department_id
+    -> WHERE d.department_id IN (1, 2, 3);
+Empty set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, j.job_title, d.department_name
+    -> FROM Employees e
+    -> JOIN Jobs j ON e.job_id = j.job_id
+    -> JOIN Departments d ON e.department_id = d.department_id
+    -> WHERE e.department_id IN (1, 2, 3) AND e.salary > 10000;
+Empty set (0.00 sec)
+
+mysql> SELECT d.department_name, l.street_address, l.postal_code, c.country_name, r.region_name
+    -> FROM Departments d
+    -> JOIN Locations l ON d.location_id = l.location_id
+    -> JOIN Countries c ON l.country_id = c.country_id
+    -> JOIN Regions r ON c.region_id = r.region_id;
++--------------------+----------------+-------------+---------------+---------------+
+| department_name    | street_address | postal_code | country_name  | region_name   |
++--------------------+----------------+-------------+---------------+---------------+
+| IT DEPARTMENT      | 123 main st    | 12345       | United states | North America |
+| HR DEPARTMENT      | 456 Elm st     | 67890       | canada        | North America |
+| Finance DEPARTMENT | 789 Oak st     | 98765       | UK            | Europe        |
++--------------------+----------------+-------------+---------------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, e.department_id, d.department_name
+    -> FROM Employees e
+    -> LEFT JOIN Departments d ON e.department_id = d.department_id;
++------------+-----------+---------------+-----------------+
+| first_name | last_name | department_id | department_name |
++------------+-----------+---------------+-----------------+
+| John       | Doe       |           101 | IT DEPARTMENT   |
++------------+-----------+---------------+-----------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, d.department_name, l.city, l.state_province
+    -> FROM Employees e
+    -> JOIN Departments d ON e.department_id = d.department_id
+    -> JOIN Locations l ON d.location_id = l.location_id
+    -> WHERE e.first_name LIKE '%Z%';
+Empty set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, d.department_id, d.department_name
+    -> FROM Departments d
+    -> LEFT JOIN Employees e ON d.department_id = e.department_id;
++------------+-----------+---------------+--------------------+
+| first_name | last_name | department_id | department_name    |
++------------+-----------+---------------+--------------------+
+| John       | Doe       |           101 | IT DEPARTMENT      |
+| NULL       | NULL      |           102 | HR DEPARTMENT      |
+| NULL       | NULL      |           103 | Finance DEPARTMENT |
++------------+-----------+---------------+--------------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT e.first_name, e.last_name, e.department_id
+    -> FROM Employees e
+    -> JOIN Employees t ON e.department_id = t.department_id
+    -> WHERE t.last_name = 'Taylor';
+Empty set (0.00 sec)
+
+mysql> SELECT j.job_title, CONCAT(e.first_name, ' ', e.last_name) AS employee_name, 
+    ->     (j.max_salary - e.salary) AS salary_difference
+    -> FROM Employees e
+    -> JOIN Jobs j ON e.job_id = j.job_id;
++---------------+---------------+-------------------+
+| job_title     | employee_name | salary_difference |
++---------------+---------------+-------------------+
+| Software Engg | John Doe      |          25000.00 |
++---------------+---------------+-------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT d.department_name, AVG(e.salary) AS average_salary, COUNT(e.employee_id) AS num_employees_with_commission
+    -> FROM Employees e
+    -> JOIN Departments d ON e.department_id = d.department_id
+    -> WHERE e.commission_pct IS NOT NULL
+    -> GROUP BY d.department_name;
+ERROR 1054 (42S22): Unknown column 'e.commission_pct' in 'where clause'
+mysql> CREATE VIEW Delhi_Employees AS
+    -> SELECT e.first_name, e.last_name, e.employee_id, e.phone_number, 
+    ->     j.job_title, d.department_name, CONCAT(m.first_name, ' ', m.last_name) AS manager_name
+    -> FROM Employees e
+    -> JOIN Jobs j ON e.job_id = j.job_id
+    -> JOIN Departments d ON e.department_id = d.department_id
+    -> LEFT JOIN Employees m ON e.manager_id = m.employee_id
+    -> JOIN Locations l ON d.location_id = l.location_id
+    -> WHERE l.city = 'Delhi';
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> SELECT first_name, last_name
+    -> FROM Delhi_Employees
+    -> WHERE job_title = 'Manager' AND department_name = 'Finance';
+Empty set (0.01 sec)
+
+mysql> UPDATE Delhi_Employees
+    -> SET phone_number = '1234567890'
+    -> WHERE first_name = 'Smith';
+ERROR 1288 (HY000): The target table Delhi_Employees of the UPDATE is not updatable
+mysql> SELECT e.*
+    -> FROM Employees e
+    -> LEFT JOIN Dependents d ON e.employee_id = d.employee_id
+    -> WHERE d.dependent_id IS NULL;
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+| employee_id | first_name | last_name | email          | phone_number | hire_date  | job_id | salary   | manager_id | department_id |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+|        1001 | John       | Doe       | John@gmail.com | 12345        | 2024-04-03 |      1 | 75000.00 |       NULL |           101 |
++-------------+------------+-----------+----------------+--------------+------------+--------+----------+------------+---------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM Employees
+    -> WHERE manager_id IN (101, 201)
+    -> UNION
+    -> SELECT *
+    -> FROM Employees
+    -> WHERE employee_id IN (101, 201);
+Empty set (0.00 sec)
+
+mysql> SELECT e.*
+    -> FROM Employees e
+    -> JOIN Dependents d ON e.employee_id = d.employee_id;
+Empty set (0.00 sec)
+
+mysql> 
+
